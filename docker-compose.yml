@@ -1,0 +1,13 @@
+services:
+  mongo:
+    image: bitnami/mongodb:latest
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongoadmin
+      - MONGO_INITDB_ROOT_PASSWORD=EvaTest2025
+    volumes:
+      - mongodata:/bitnami/mongodb
+volumes:
+  mongodata:
+    driver: local

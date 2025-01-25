@@ -1,0 +1,271 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "EVA API",
+        "version": "1.0.0",
+        "description": "A sample API built with TypeScript and Swagger"
+    },
+    "paths": {
+        "/login": {
+            "post": {
+                "responses": {
+                    "201": {
+                        "description": "User logged in successfully"
+                    },
+                    "401": {
+                        "description": "User does not exists"
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/login"
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Auth"
+                ],
+                "sumary": "User login"
+            }
+        },
+        "/private/journey": {
+            "post": {
+                "responses": {
+                    "201": {
+                        "description": "Journey created successfully"
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/journey"
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Journeys"
+                ],
+                "sumary": "Create a new journey"
+            }
+        },
+        "/private/journeys": {
+            "get": {
+                "responses": {
+                "200": {
+                    "description": "Lista de Jornadas",
+                    "content": {
+                    "application/json": {
+                        "schema": {
+                        "type": "object",
+                        "properties": {
+                            "actions": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/action"
+                            }
+                            }
+                        }
+                        },
+                        "example": {
+                        "journeys": [
+                            {
+                            "id": "mock-id-1",
+                            "name": "Jornada Teste 1",
+                            "actions": [],
+                            "start_date": "2023-01-01T00:00:00.000Z"
+                            },
+                            {
+                            "id": "mock-id-2",
+                            "name": "Jornada Teste 2",
+                            "actions": [],
+                            "start_date": "2023-01-01T00:00:00.000Z"
+                            }
+                        ]
+                        }
+                    }
+                    }
+                }
+            },
+            "tags": [
+            "Journeys"
+            ],
+            "summary": "Lista de Jornadas"
+            }
+        },
+        "/private/collaborators": {
+            "get": {
+                "responses": {
+                "200": {
+                    "description": "Lista de colaboradores",
+                    "content": {
+                    "application/json": {
+                        "schema": {
+                        "type": "object",
+                        "properties": {
+                            "collaborators": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/collaborators"
+                            }
+                            }
+                        }
+                        },
+                        "example": {
+                        "collaborators": [
+                            {
+                            "id": "mock-id-1",
+                            "name": "Colaborador Teste 1",
+                            "journeys": []
+                            },
+                            {
+                            "id": "mock-id-2",
+                            "name": "Colaborador Teste 2",
+                            "journeys": []
+                            }
+                        ]
+                        }
+                    }
+                    }
+                }
+            },
+            "tags": [
+            "Collaborators"
+            ],
+            "summary": "Lista de colaboradores"
+            }
+        },
+        "/private/actions": {
+            "get": {
+                "responses": {
+                "200": {
+                    "description": "Lista de ações",
+                    "content": {
+                    "application/json": {
+                        "schema": {
+                        "type": "object",
+                        "properties": {
+                            "collaborators": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/action"
+                            }
+                            }
+                        }
+                        },
+                        "example": {
+                        "collaborators": [
+                            {
+                            "id": "mock-id-1",
+                            "name": "Ação Teste 1",
+                            "journeys": []
+                            },
+                            {
+                            "id": "mock-id-2",
+                            "name": "Ação Teste 2",
+                            "journeys": []
+                            }
+                        ]
+                        }
+                    }
+                    }
+                }
+            },
+            "tags": [
+            "Actions"
+            ],
+            "summary": "Lista de ações"
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "login": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "journey": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "actions",
+                    "collaborators",
+                    "start_date"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "actions": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "collaborators": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "start_date": {
+                        "type": "date"
+                    }
+                }
+            },
+            "collaborators": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "collaborators": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "action": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "journeys": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
