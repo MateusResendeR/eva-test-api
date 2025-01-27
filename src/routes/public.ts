@@ -5,8 +5,8 @@ import express from "express";
 
 const router = express.Router();
 
-router.post("/login", (req: Request, res: Response) => {
-    login(req, res);
+router.post("/login", async (req: Request, res: Response) => {
+    await login(req, res);
 });
 
 export default router;

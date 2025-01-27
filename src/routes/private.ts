@@ -20,7 +20,7 @@ router.get("/collaborators", (req: Request, res: Response) => {
 });
 
 router.get("/actions", (req: Request, res: Response) => {
-  listActions(req, res);
+  listActions(req, res); 
 });
 
 export default router; 

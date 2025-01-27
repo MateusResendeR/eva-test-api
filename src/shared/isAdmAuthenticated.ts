@@ -2,16 +2,20 @@ import { NextFunction, Request, Response } from 'express';
 import { verifyToken } from '../jwt/jwt';
 
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  const tokenFull = req.headers['authorization'];
-  const token = tokenFull?.split(' ')[1];
+  const token = req.headers.authorization;
 
   if (!token) {
-    res.status(401).json({ message: 'Unauthorized' });
+    res.status(401).json({ message: 'Token não fornecido' });
+    return;
   }
-  const payload = verifyToken(token ?? '');
-  if (!payload) {
-      res.status(401).json({ message: 'Unauthorized' });
+
+  const result = verifyToken(token as string);
+
+  if (result.error) {
+    res.status(401).json({ message: result.error });
+    return;
   }
+
   next();
 };
 
