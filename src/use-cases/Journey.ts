@@ -1,51 +1,61 @@
+import { prisma } from "@/lib/prisma";
 import { JourneyInterface, journeysRepository } from "@/repositories/journeys-repository";
 import  Bull from 'bull';
+import { DateTime } from 'luxon';
 
 
 export class JourneyUseCase {
 
-    private queue = new Bull('my-queue');
+    private queue = new Bull('my-queue', "redis://red-cubsr2hu0jms73c0kscg:6379");
 
     constructor(private journeysRepository: journeysRepository) {}
-
-    private mockCallAPIS = () => {
-        console.log('mockWhatsapp');
-        console.log('mockEmail');
-    }
-
-    private convertDateTimeToCron = (dateTime: Date) =>{
-      const date = new Date(dateTime.toISOString());
-      const hours = date.getHours().toString().padStart(2, '0');
-      const minutes = date.getMinutes().toString().padStart(2, '0');
-      const seconds = date.getSeconds().toString().padStart(2, '0');
-      const dayOfMonth = date.getDate().toString().padStart(2, '0');
-      const month = (date.getMonth() + 1).toString().padStart(2, '0');
-      const dayOfWeek = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][date.getDay()];
+    
+    private convertDateTimeToCron = (dateTime: Date, timezone: string) => {
+      const dt = DateTime.fromJSDate(dateTime, { zone: timezone });
+      const hours = dt.hour.toString().padStart(2, '0');
+      const minutes = dt.minute.toString().padStart(2, '0');
+      const seconds = dt.second.toString().padStart(2, '0');
+      const dayOfMonth = dt.day.toString().padStart(2, '0');
+      const month = dt.month.toString().padStart(2, '0');
+      const dayOfWeek = dt.weekday.toString().padStart(2, '0');
     
       const cronExpression = `${seconds} ${minutes} ${hours} ${dayOfMonth} ${month} ${dayOfWeek}`;
     
       return cronExpression;
     }
-
+    
+    private mockCallAPIS = async (id: string, start_date: Date) => {
+        console.log('Cahamando JOB maracdado para: '+ start_date);
+        try {
+          await prisma.journey.update({
+            where: {
+              id: id
+            },
+            data: {
+              "status": "Exacutado",
+            }
+          });
+        } catch (error) {
+          console.log("error mateus", error);
+        }
+    }
     async create({ name, actions, collaborators, start_date }:JourneyInterface) : Promise<boolean> {
+      
+      const id =await this.journeysRepository.create({name, actions, collaborators, start_date});
 
-        await this.journeysRepository.create({name, actions, collaborators, start_date});
-
-        console.log(start_date.toISOString());
-
-        const date = new Date(start_date.toISOString());
+        const date = DateTime.fromJSDate(start_date).toUTC();
+        const jsDate = date.toJSDate();
         
         this.queue.add('my-job', {
           start_date: start_date,
         }, {
           repeat: {
-            cron: this.convertDateTimeToCron(date),
-            tz: 'America/Sao_Paulo',
+            cron: this.convertDateTimeToCron(jsDate, 'America/Sao_Paulo'),
           },
         });
 
         this.queue.process('my-job', async ()  => {
-          this.mockCallAPIS();
+          await this.mockCallAPIS(id, start_date);
         });
     
         return true;

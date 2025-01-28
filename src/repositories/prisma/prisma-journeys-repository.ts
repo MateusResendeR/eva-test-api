@@ -3,7 +3,7 @@ import { JourneyInterface, journeysRepository } from "../journeys-repository";
 
 export class PrismaJourneysRepository implements journeysRepository {
 
-    async create(data: JourneyInterface) {
+    async create(data: JourneyInterface): Promise<string> {
         const journey = await prisma.journey.create({
             data: {
                 name: data.name,
@@ -38,6 +38,8 @@ export class PrismaJourneysRepository implements journeysRepository {
                 }
             }
         });
+
+        return journey.id;
     }
 
     async list() {

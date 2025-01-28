@@ -39,4 +39,5 @@ model Journey {
   actions       String[] @db.ObjectId
   collaborators String[] @db.ObjectId
   start_date    DateTime
+  status        String   @default("Pendente")
 }
