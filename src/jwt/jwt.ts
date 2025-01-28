@@ -4,7 +4,9 @@ import { env } from 'process';
 
 export const verifyToken = (token: string) => {
   try {
+    console.log(token);
     const decoded = jwt.verify(token.split(' ')[1], env.JWT_SECRET ?? 'secret');
+
     return { decoded };
   } catch (error: any) {
     if (error.name === 'TokenExpiredError') {
