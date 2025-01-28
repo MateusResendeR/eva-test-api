@@ -10,6 +10,7 @@ export const verifyToken = (token: string) => {
     if (error.name === 'TokenExpiredError') {
       return { error: 'Token expirado' };
     } else {
+      console.log(error);
       return { error: 'Token inválido' };
     }
   }
