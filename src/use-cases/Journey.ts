@@ -6,7 +6,7 @@ import { DateTime } from 'luxon';
 
 export class JourneyUseCase {
 
-    private queue = new Bull('my-queue', "redis://red-cubsr2hu0jms73c0kscg:6379");
+    private queue = new Bull('my-queue');
 
     constructor(private journeysRepository: journeysRepository) {}
     
