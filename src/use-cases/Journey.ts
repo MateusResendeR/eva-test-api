@@ -25,7 +25,7 @@ export class JourneyUseCase {
     }
     
     private mockCallAPIS = async (id: string, start_date: Date) => {
-        console.log('Cahamando JOB maracdado para: '+ start_date);
+        console.log('Chamando JOB maracdado para: '+ start_date);
         try {
           await prisma.journey.update({
             where: {
@@ -36,7 +36,7 @@ export class JourneyUseCase {
             }
           });
         } catch (error) {
-          console.log("error mateus", error);
+          console.log(error);
         }
     }
     async create({ name, actions, collaborators, start_date }:JourneyInterface) : Promise<boolean> {
@@ -45,7 +45,7 @@ export class JourneyUseCase {
 
         const date = DateTime.fromJSDate(start_date).toUTC();
         const jsDate = date.toJSDate();
-        
+
         this.queue.add('my-job', {
           start_date: start_date,
         }, {
